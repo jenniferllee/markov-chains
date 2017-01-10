@@ -1,4 +1,5 @@
 from random import choice
+import random
 
 
 def open_and_read_file(file_path):
@@ -9,10 +10,10 @@ def open_and_read_file(file_path):
     """
 
     # your code goes here
-    green_eggs_file = open(file_path).read()
+    open_file = open(file_path).read()
     # print type(green_eggs_file)
 
-    return green_eggs_file
+    return open_file
 
 
 def make_chains(text_string):
@@ -29,19 +30,15 @@ def make_chains(text_string):
     """
     words = text_string.split()
     chains = {}     #dictionary
-    for i in range(len(words) - 1):
-        tup1 = words[i]
-        tup2 = words[i + 1]
-        if tup2 != "am?":
-            value = words[i + 2]
-            bigram = (tup1, tup2)
-            if bigram in chains:
-                chains[bigram].append(value)
-            else:
-                chains[bigram] = [value]
+    for i in range(len(words) - 2):
+        key1 = words[i]
+        key2 = words[i + 1]
+        value = words[i + 2]
+        bigram = (key1, key2)
+        if bigram in chains:
+            chains[bigram].append(value)
         else:
-            bigram = (tup1, tup2)
-            chains[bigram] = None
+            chains[bigram] = [value]
 
     print chains
     return chains
@@ -51,6 +48,21 @@ def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
     text = ""
+    first_bigram = random.choice(chains.key())
+    word1 = first_bigram[0]
+    word2 = first_bigram[1]
+    word3 = random.choice(chains[first_bigram])
+    text = text + "%s %s %s" % (word1, word2, word3)
+    new_key = (word2, word3)
+
+    while new_key in chains:
+        word1 = new_key[0]
+        word2 = new_key[1]
+        word3 = random.choice(chains[new_key])
+        text = text + "%s %s %s" % (word1, word2, word3)
+        new_key = (word2, word3)
+
+        print text
 
     # your code goes here
 
