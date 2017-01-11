@@ -1,5 +1,4 @@
 from random import choice
-import random
 
 
 def open_and_read_file(file_path):
@@ -35,12 +34,14 @@ def make_chains(text_string):
         key2 = words[i + 1]
         value = words[i + 2]
         bigram = (key1, key2)
-        if bigram in chains:
-            chains[bigram].append(value)
-        else:
-            chains[bigram] = [value]
+        # if bigram in chains:
+        #     chains[bigram].append(value)
+        # else:
+        #     chains[bigram] = [value]
+        chains[bigram] = chains.get(bigram, []) + [value]
+        # chains[bigram].append(value)
 
-    print chains
+    #print chains
     return chains
 
 
@@ -48,21 +49,21 @@ def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
     text = ""
-    first_bigram = random.choice(chains.key())
+    first_bigram = choice(chains.keys())
     word1 = first_bigram[0]
     word2 = first_bigram[1]
-    word3 = random.choice(chains[first_bigram])
+    word3 = choice(chains[first_bigram])
     text = text + "%s %s %s" % (word1, word2, word3)
     new_key = (word2, word3)
 
     while new_key in chains:
         word1 = new_key[0]
         word2 = new_key[1]
-        word3 = random.choice(chains[new_key])
-        text = text + "%s %s %s" % (word1, word2, word3)
+        word3 = choice(chains[new_key])
+        text = text + " %s" % (word3)
         new_key = (word2, word3)
-
-        print text
+    
+    #print text
 
     # your code goes here
 
