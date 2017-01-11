@@ -17,7 +17,7 @@ def open_and_read_file(file_path):
     return open_file
 
 
-def make_chains(text_string, n=2):
+def make_chains(text_string, n):
     """Takes input text as string; returns _dictionary_ of markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -39,7 +39,7 @@ def make_chains(text_string, n=2):
             key = key + [words[j+i]]
         value = words[i+j+1]
         ngram = tuple(key)
-        print ngram
+        #print ngram
 
     # for i in range(len(words) - int(n)):
     #     key = []
@@ -59,30 +59,50 @@ def make_chains(text_string, n=2):
     #print ngram
 
     #print chains
-    # return chains
+    return chains
 
+def initial_key(chains_dict, n):
+    """ Creates a random key from a given dictionary. Outputs a tuple of length n
+    """
 
-def make_text(chains):
+    random_key = choice(chains_dict.keys()) #tuple
+    while not random_key[0][0].isupper():
+        random_key = choice(chains_dict.keys())
+
+    return random_key
+
+def make_text(chains_dict, n):
     """Takes dictionary of markov chains; returns random text."""
 
     # your code goes here
 
     text = ""
-    # first_bigram = choice(chains.keys())
-    # word1 = first_bigram[0]
-    # word2 = first_bigram[1]
-    # word3 = choice(chains[first_bigram])
-    # text = text + "%s %s %s" % (word1, word2, word3)
-    # new_key = (word2, word3)
+    # final_text = ""
+    #pick random key which is a tuple of size n
+    
+    random_key = initial_key(chains_dict, n)
+    for word in random_key:
+    text = text + ' ' + word + ' '
 
-    # while new_key in chains:
-    #     word1 = new_key[0]
-    #     word2 = new_key[1]
-    #     word3 = choice(chains[new_key])
-    #     text = text + " %s" % (word3)
-    #     new_key = (word2, word3)
+    random_value = choice(chains_dict[random_key]) #one word
 
+
+    text = text + random_value
+
+
+
+    new_key_list = list(random_key[1:]) + [random_value]
+    new_key = tuple(new_key_list)
+    # print new_key
+
+    while new_key in chains_dict:
+        random_value = choice(chains_dict[new_key])
+        text = text + ' ' + random_value + ' '
+        new_key_list = list(new_key[1:]) + [random_value]
+        new_key = tuple(new_key_list)
     return text
+
+    # return final_text
 
 
 input_path = sys.argv[1]
@@ -91,9 +111,9 @@ input_path = sys.argv[1]
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains(input_text, int(sys.argv[2]))
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, int(sys.argv[2]))
 
 print random_text
